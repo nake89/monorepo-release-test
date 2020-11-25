@@ -1,0 +1,23 @@
+language: generic
+
+branches:
+  only:
+    - main
+
+notifications:
+  email: false
+
+jobs:
+  include:
+    - name: Kuka Core
+      language: node_js
+      node_js: 12
+      cache: npm
+      env: TARGET=packages/core
+    - name: Kuka Serverless
+      language: node_js
+      node_js: 12
+      cache: npm
+      env: TARGET=packages/serverless
+
+script: if .travis/build.sh $TRAVIS_COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
