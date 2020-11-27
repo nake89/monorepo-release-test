@@ -21,6 +21,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: |
+          echo "Github event path:"
+          echo $GITHUB_EVENT_PATH
+          echo "jq before:"
+          jq '.before' $GITHUB_EVENT_PATH
+          echo "jq after:"
+          jq '.' $GITHUB_EVENT_PATH
           RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
           COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
           echo $RANGE; echo $COMMIT_RANGE; pwd; ls -la
@@ -34,6 +40,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: |
+          echo "Github event path:"
+          echo $GITHUB_EVENT_PATH
+          echo "jq before:"
+          jq '.before' $GITHUB_EVENT_PATH
+          echo "jq after:"
+          jq '.' $GITHUB_EVENT_PATH
           RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
           COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
           echo $RANGE; echo $COMMIT_RANGE; pwd; ls -la
