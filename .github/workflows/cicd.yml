@@ -20,8 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: npm ci
-      - run: npm test
       - run: RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
       - run: COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
       - run: |
@@ -34,8 +32,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: npm ci
-      - run: npm test
       - run: RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
       - run: COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
       - run: |
