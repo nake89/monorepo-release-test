@@ -9,6 +9,9 @@ on:
   pull_request:
     branches: [ $default-branch ]
 
+  workflow_dispatch:
+
+
 jobs:
   core:
     runs-on: ubuntu-latest
