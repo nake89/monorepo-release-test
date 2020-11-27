@@ -20,4 +20,5 @@ jobs:
       cache: npm
       env: TARGET=packages/serverless
 
+before_script: echo $TRAVIS_COMMIT_RANGE; echo $TARGET; pwd; ls -la;
 script: if .ci/build.sh $TRAVIS_COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
