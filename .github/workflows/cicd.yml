@@ -1,0 +1,39 @@
+name: monorepo-release-test
+env:
+  NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+  GH_TOKEN: ${{secrets.GH_TOKEN}}
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          TARGET: "packages/core"
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm ci
+      - run: npm test
+      - run: RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
+      - run: COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
+      - run: |
+          if .travis/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
+
+  serverless:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          TARGET: "packages/serverless"
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm ci
+      - run: npm test
+      - run: RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
+      - run: COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
+      - run: |
+          if .travis/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
