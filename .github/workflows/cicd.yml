@@ -12,9 +12,9 @@ on:
 jobs:
   core:
     runs-on: ubuntu-latest
+    env:
+      TARGET: "packages/core"
     steps:
-      - env:
-          TARGET: "packages/core"
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: npm ci
@@ -26,9 +26,9 @@ jobs:
 
   serverless:
     runs-on: ubuntu-latest
+    env:
+      TARGET: "packages/serverless"
     steps:
-      - env:
-          TARGET: "packages/serverless"
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: npm ci
