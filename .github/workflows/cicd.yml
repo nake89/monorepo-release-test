@@ -20,11 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
-      - run: COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
       - run: |
+          RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
+          COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
           echo $RANGE; echo $COMMIT_RANGE; pwd; ls -la
-      - run: |
           if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
 
   serverless:
@@ -34,9 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
-      - run: COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
       - run: |
+          RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
+          COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
           echo $RANGE; echo $COMMIT_RANGE; pwd; ls -la
-      - run: |
           if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
