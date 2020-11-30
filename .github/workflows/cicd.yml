@@ -3,48 +3,29 @@ env:
   NPM_TOKEN: ${{secrets.NPM_TOKEN}}
   GH_TOKEN: ${{secrets.GH_TOKEN}}
   COMMIT_RANGE: "${{github.event.before }}..${{github.event.after}}"
-  COMMIT_RANGEASD: ${{github.event.before }}..${{github.event.after}}
+  
 on:
   push:
     branches: 
       - main
 
 jobs:
-  output:
+  core:
     runs-on: ubuntu-latest
+    env:
+      TARGET: "packages/core"
     steps:
-      - name: Dump GitHub context
-        run: |
-          echo "Combined"
-          echo "${{github.event.before }}..${{github.event.after}}"
-          echo "COMMIT_RANGE"
-          echo $COMMIT_RANGE
-          echo "COMMIT_RANGEASD"
-          echo $COMMIT_RANGEASD
-      # - run: curl -o out.json ${{ github.event.push }}
-      # - name: Upload artifact
-      #   uses: actions/upload-artifact@v1.0.0
-      #   with:
-      #     name: commits
-      #     path: out.json
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: |
+          if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
 
-# jobs:
-#   core:
-#     runs-on: ubuntu-latest
-#     env:
-#       TARGET: "packages/core"
-#     steps:
-#       - uses: actions/checkout@v2
-#       - uses: actions/setup-node@v1
-#       - run: |
-#           if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
-
-#   serverless:
-#     runs-on: ubuntu-latest
-#     env:
-#       TARGET: "packages/serverless"
-#     steps:
-#       - uses: actions/checkout@v2
-#       - uses: actions/setup-node@v1
-#       - run: |
-#           if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
+  serverless:
+    runs-on: ubuntu-latest
+    env:
+      TARGET: "packages/serverless"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: |
+          if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
