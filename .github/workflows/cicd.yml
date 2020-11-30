@@ -6,47 +6,58 @@ env:
 on:
   push:
     branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
-
   workflow_dispatch:
 
-
 jobs:
-  core:
+  output:
     runs-on: ubuntu-latest
-    env:
-      TARGET: "packages/core"
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: |
-          echo "Github event path:"
-          echo $GITHUB_EVENT_PATH
-          echo "jq before:"
-          jq '.before' $GITHUB_EVENT_PATH
-          echo "jq after:"
-          jq '.' $GITHUB_EVENT_PATH
-          RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
-          COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
-          echo $RANGE; echo $COMMIT_RANGE; pwd; ls -la
-          if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ github.event }}
+        run: echo "$GITHUB_CONTEXT"
+      - run: curl -o out.json ${{ github.event }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: commits
+          path: out.json
 
-  serverless:
-    runs-on: ubuntu-latest
-    env:
-      TARGET: "packages/serverless"
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: |
-          echo "Github event path:"
-          echo $GITHUB_EVENT_PATH
-          echo "jq before:"
-          jq '.before' $GITHUB_EVENT_PATH
-          echo "jq after:"
-          jq '.' $GITHUB_EVENT_PATH
-          RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
-          COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
-          echo $RANGE; echo $COMMIT_RANGE; pwd; ls -la
-          if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
+# jobs:
+#   core:
+#     runs-on: ubuntu-latest
+#     env:
+#       TARGET: "packages/core"
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: actions/setup-node@v1
+#       - run: |
+#           echo "Github event path:"
+#           echo $GITHUB_EVENT_PATH
+#           echo "jq before:"
+#           jq '.before' $GITHUB_EVENT_PATH
+#           echo "jq after:"
+#           jq '.' $GITHUB_EVENT_PATH
+#           RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
+#           COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
+#           echo $RANGE; echo $COMMIT_RANGE; pwd; ls -la
+#           if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
+
+#   serverless:
+#     runs-on: ubuntu-latest
+#     env:
+#       TARGET: "packages/serverless"
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: actions/setup-node@v1
+#       - run: |
+#           echo "Github event path:"
+#           echo $GITHUB_EVENT_PATH
+#           echo "jq before:"
+#           jq '.before' $GITHUB_EVENT_PATH
+#           echo "jq after:"
+#           jq '.' $GITHUB_EVENT_PATH
+#           RANGE="$(jq '.before' $GITHUB_EVENT_PATH)..$(jq '.after' $GITHUB_EVENT_PATH)"
+#           COMMIT_RANGE=$(echo $RANGE | sed 's/\"//') 
+#           echo $RANGE; echo $COMMIT_RANGE; pwd; ls -la
+#           if .ci/build.sh $COMMIT_RANGE $TARGET; then echo "Building '$TARGET' ..." && cd $TARGET && scripts/ci.sh; else echo "No changes detected in '$TARGET'; skipping build."; fi
