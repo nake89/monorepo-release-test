@@ -20,7 +20,7 @@ jobs:
         run: |
           echo "$BEFORE"
           echo "$AFTER"
-          echo ${{ toJson(github.event) }}
+          echo "${{github.event.before }}..${{github.event.after}}"
       # - run: curl -o out.json ${{ github.event.push }}
       # - name: Upload artifact
       #   uses: actions/upload-artifact@v1.0.0
