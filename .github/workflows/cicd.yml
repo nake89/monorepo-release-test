@@ -15,9 +15,9 @@ jobs:
     steps:
       - name: Dump GitHub context
         env:
-          GITHUB_CONTEXT: ${{ github.event }}
+          GITHUB_CONTEXT: ${{ github.event.push }}
         run: echo "$GITHUB_CONTEXT"
-      - run: curl -o out.json ${{ github.event }}
+      - run: curl -o out.json ${{ github.event.push }}
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
