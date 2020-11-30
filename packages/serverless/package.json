@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Test: A-OK\" && exit 0"
+    "test": "echo \"Test: A-OK\" && exit 0",
+    "semantic-release": "semantic-release"
   },
   "author": "",
   "license": "ISC",
